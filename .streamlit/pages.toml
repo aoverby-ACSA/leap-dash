@@ -1,0 +1,53 @@
+[[pages]]
+name = "Home"
+path = "main.py"
+
+[[pages]]
+name = "Landry"
+icon = ""
+is_section = true
+
+[[pages]]
+path = "pages/landry-summary.py"
+name = "Landry Achievement Summary"
+icon=":📈:"
+
+# [[pages]]
+# path = "pages/landry-domain.py"
+# name = "Landry Domain Summary"
+# icon = "📚"
+
+[[pages]]
+path = "pages/landry-ai.py"
+name = "Landry Assessment Index"
+icon = "🎯"
+
+# [[pages]]
+# path = ""
+# name = "SPS Playground"
+# icon = "🛝"
+
+[[pages]]
+name = "Behrman"
+icon = ""
+is_section = true
+
+[[pages]]
+path = "pages/behrman-summary.py"
+name = "Behrman Achievement Summary"
+icon=":📈:"
+
+# [[pages]]
+# path = "pages/behrman-domain.py"
+# name = "Behrman Domain Summary"
+# icon = "📚"
+
+[[pages]]
+path = "pages/behrman-ai.py"
+name = "Behrman Assessment Index"
+icon = "🎯"
+
+# [[pages]]
+# path = ""
+# name = "SPS Playground"
+# icon = "🛝"
