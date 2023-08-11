@@ -22,7 +22,7 @@ math_ai = elem_ai_calc(behrman, 'Math')
 social_ai = elem_ai_calc(behrman, 'Social')
 sci_ai = elem_ai_calc(behrman, 'Science')
 
-ass_indices = [ela_ai, math_ai, social_ai, sci_ai]
+ass_indices = [ela_ai, ela_ai, math_ai, math_ai, social_ai, sci_ai]
 
 overall_ass_index = round(np.nanmean(ass_indices), 1)
 
