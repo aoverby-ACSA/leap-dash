@@ -1,3 +1,5 @@
 .leapenv 
 .env
 data/
+pycache/
+**/pycache
