@@ -69,7 +69,7 @@ def load_leap_data(school="Landry" or "Behrman"):
     BEHRMAN_CSV = os.environ.get("BEHRMAN_CSV")
     try:
         if school == 'Landry':
-            df = pd.read_csv(LANDRY_CSV)
+            df = pd.read_csv(LANDRY_CSV, skipinitialspace=True)
             # Landry-specific csv modifications here
             df_cols = ['AdministrationYear',
                     'AdministrationMonth',
@@ -176,7 +176,7 @@ def load_leap_data(school="Landry" or "Behrman"):
             df['SPSYear'] = np.where(df['AdministrationMonth'] != 5, df['AdministrationYear'], df['AdministrationYear'] - 1)
             
         else:
-            df = pd.read_csv(BEHRMAN_CSV)
+            df = pd.read_csv(BEHRMAN_CSV, skipinitialspace=True)
             # Behrman-specific csv modifications here
             df_cols = [
                 'LastName',
@@ -192,7 +192,7 @@ def load_leap_data(school="Landry" or "Behrman"):
                 'EL',
                 'Migrant',
                 'Section504',
-                'Homeless',
+                'HomelessFlag',
                 'Military Affiliation',
                 'Foster Care',
                 'RemediationNeeded',
@@ -274,17 +274,33 @@ def ach_by_yr_line(df, subj: str):
     ach_by_yr = ach_by_yr.to_frame()
     ach_by_yr.reset_index(inplace=True)
     ach_by_yr['%'] = round(100 * ach_by_yr['count'] / ach_by_yr.groupby('SPSYear')['count'].transform('sum'))
-    fig = px.line(ach_by_yr, x='SPSYear', y='%', color=f'{subj}AchievementLevel', markers=True,
-                  color_discrete_map={
-                           "Unsatisfactory": "crimson",
-                           "Approaching Basic": "orange",
-                           "Basic": "green",
-                           "Mastery": "lightgreen",
-                           "Advanced": "lime"
-                       })
-    fig.update_traces(mode='lines+markers+text',texttemplate="%{y}%", textposition='top center')
-    fig.update_xaxes(dtick="M12", tickformat="%Y")
-    # fig.update_yaxes(range=(0, 100))
+    ach_by_yr['SPSYear'] = pd.to_datetime(ach_by_yr['SPSYear'])
+    if len(ach_by_yr['SPSYear'].unique()) != 1:
+        fig = px.line(ach_by_yr, x='SPSYear', y='%', color=f'{subj}AchievementLevel', markers=True,
+                    color_discrete_map={
+                            "Unsatisfactory": "crimson",
+                            "Approaching Basic": "orange",
+                            "Basic": "green",
+                            "Mastery": "lightgreen",
+                            "Advanced": "lime"
+                        })
+        fig.update_traces(mode='lines+markers+text',texttemplate="%{y}%", textposition='top center')
+        fig.update_xaxes(dtick="M12", tickformat="%Y")
+    else:
+        fig = px.bar(ach_by_yr, x='SPSYear', y='%', color=f'{subj}AchievementLevel', barmode='relative',
+                    color_discrete_map={
+                            "Unsatisfactory": "crimson",
+                            "Approaching Basic": "orange",
+                            "Basic": "green",
+                            "Mastery": "lightgreen",
+                            "Advanced": "lime"
+                        })
+        fig.update_traces(width=0.1,
+                          texttemplate="%{y}%", textposition='outside')
+        fig.update_xaxes(dtick="M12", tickformat="%Y")
+        
+        
+    
     return st.plotly_chart(fig, use_container_width=True)
 
 def ach_histogram(df, subj: str):
@@ -336,8 +352,6 @@ def ss_median_line(df, subj: str):
         fig.update_xaxes(dtick="M12", tickformat="%Y")
         
         fig.update_yaxes(range=(649, max_value + 25))
-        # fig.add_hline(y=725, line_color="green")
-        # fig.add_annotation(y=725, text='Basic') NICE TOUCH BUT SLOWS DOWN BROWSER A LOT
     else:
         fig = px.bar(median_by_yr, x='SPSYear', y=f'{subj}ScaleScore')
         fig.update_traces(width=0.1,
