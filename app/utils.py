@@ -283,7 +283,7 @@ def ach_by_yr_line(df, subj: str):
                             "Basic": "green",
                             "Mastery": "lightgreen",
                             "Advanced": "lime"
-                        })
+                        }, template='simple_white')
         fig.update_traces(mode='lines+markers+text',texttemplate="%{y}%", textposition='top center')
         fig.update_xaxes(dtick="M12", tickformat="%Y")
     else:
@@ -294,7 +294,7 @@ def ach_by_yr_line(df, subj: str):
                             "Basic": "green",
                             "Mastery": "lightgreen",
                             "Advanced": "lime"
-                        })
+                        }, template='simple_white')
         fig.update_traces(width=0.1,
                           texttemplate="%{y}%", textposition='outside')
         fig.update_xaxes(dtick="M12", tickformat="%Y")
@@ -314,7 +314,7 @@ def ach_histogram(df, subj: str):
                            "Basic": "green",
                            "Mastery": "lightgreen",
                            "Advanced": "lime"
-                       }
+                       }, template='simple_white'
                        )
     fig.update_xaxes(dtick="M12", tickformat="%Y") ## Nice hack for getting timeseries x axis to look right
     fig.update_layout(showlegend=True)
@@ -331,7 +331,7 @@ def scale_score_distrib(df, subj:str):
                            "Basic": "green",
                            "Mastery": "lightgreen",
                            "Advanced": "lime"
-                       }
+                       } , template='simple_white'
                        )
     fig.update_layout(showlegend=True,
                       bargap=0.1
@@ -346,14 +346,13 @@ def ss_median_line(df, subj: str):
     median_by_yr.reset_index(inplace=True)
     max_value = median_by_yr[f'{subj}ScaleScore'].max()
     if len(median_by_yr['SPSYear']) != 1:
-        fig = px.line(median_by_yr, x='SPSYear', y=f'{subj}ScaleScore', markers=True,
-                    )
+        fig = px.line(median_by_yr, x='SPSYear', y=f'{subj}ScaleScore', markers=True, template='simple_white')
         fig.update_traces(mode='lines+markers+text',texttemplate="%{y}", textposition='top center')
         fig.update_xaxes(dtick="M12", tickformat="%Y")
         
         fig.update_yaxes(range=(649, max_value + 25))
     else:
-        fig = px.bar(median_by_yr, x='SPSYear', y=f'{subj}ScaleScore')
+        fig = px.bar(median_by_yr, x='SPSYear', y=f'{subj}ScaleScore', template='simple_white')
         fig.update_traces(width=0.1,
                           texttemplate="%{y}", textposition='outside')
         fig.update_xaxes(type='category')
@@ -410,12 +409,12 @@ def ai_by_grade_line(df, subj:str):
     ach_levels['AI'] = round(ach_levels['AIContrib'] / ach_levels['Count'], 1)
     
     if len(ach_levels['Year'].unique()) != 1:
-        fig = px.line(ach_levels, x='Year', y='AI', facet_col='Grade', facet_col_wrap=3, facet_col_spacing=0.01, markers=True)
+        fig = px.line(ach_levels, x='Year', y='AI', facet_col='Grade', facet_col_wrap=3, facet_col_spacing=0.01, markers=True, template='simple_white')
         fig.update_traces(mode='lines+markers+text',texttemplate="%{y}", textposition='top center')
         fig.update_xaxes(dtick="M12", tickformat="%Y")
         fig.update_yaxes(range=(0, 151))
     else:
-        fig = px.bar(ach_levels, x='Year', y='AI', facet_col='Grade', facet_col_wrap=3, facet_col_spacing=0.01)
+        fig = px.bar(ach_levels, x='Year', y='AI', facet_col='Grade', facet_col_wrap=3, facet_col_spacing=0.01, template='simple_white')
         fig.update_traces(width=0.1,
                           texttemplate="%{y}", textposition='outside')
         fig.update_yaxes(range=(0,151))
@@ -440,12 +439,12 @@ def ai_line(df, subj:str):
     ach_levels['AI'] = round(ach_levels['AIContrib'] / ach_levels['Count'], 1)
     
     if len(ach_levels['Year'].unique()) != 1: 
-        fig = px.line(ach_levels, x='Year', y='AI', markers=True)
+        fig = px.line(ach_levels, x='Year', y='AI', markers=True, template='simple_white')
         fig.update_traces(mode='lines+markers+text',texttemplate="%{y}", textposition='top center')
         fig.update_xaxes(dtick="M12", tickformat="%Y")
         fig.update_yaxes(range=(0, 151))
     else:
-        fig = px.bar(ach_levels, x='Year', y='AI')
+        fig = px.bar(ach_levels, x='Year', y='AI', template='simple_white')
         fig.update_traces(width=0.1,
                           texttemplate="%{y}", textposition='outside')
         fig.update_yaxes(range=(0,151))
