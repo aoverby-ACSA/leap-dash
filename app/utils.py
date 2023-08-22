@@ -392,3 +392,67 @@ def elem_ai_calc(df, subj:str):
     ai = round(((num_basic * 80) + (num_mastery * 100) + (num_adv * 150)) / total_scores, 1)
     
     return ai
+
+def ai_by_grade_line(df, subj:str):
+    df = df[df[f"{subj}VoidFlag"] == 'No']
+    ach_levels = df.groupby(['SPSYear', f'{subj}AchievementLevel', 'Grade'])[f'{subj}AchievementLevel'].count()
+    ach_levels.index = ach_levels.index.set_names(['Year', 'AchLevel', 'Grade'])
+    ach_levels = ach_levels.reset_index()
+    ach_levels.columns = ['Year', 'AchLevel', 'Grade','Count']
+    conditions = [
+    (ach_levels['AchLevel'] == 'Advanced'),
+    (ach_levels['AchLevel'] == 'Mastery'),
+    (ach_levels['AchLevel'] == 'Basic')
+    ]
+    values = [150, 100, 80]
+    ach_levels['AIContrib'] = np.select(conditions, values) * ach_levels['Count']
+    ach_levels = ach_levels.groupby(['Year','Grade'])[['Count', 'AIContrib']].sum().reset_index()
+    ach_levels['AI'] = round(ach_levels['AIContrib'] / ach_levels['Count'], 1)
+    
+    if len(ach_levels['Year'].unique()) != 1:
+        fig = px.line(ach_levels, x='Year', y='AI', facet_col='Grade', facet_col_wrap=3, facet_col_spacing=0.01, markers=True)
+        fig.update_traces(mode='lines+markers+text',texttemplate="%{y}", textposition='top center')
+        fig.update_xaxes(dtick="M12", tickformat="%Y")
+        fig.update_yaxes(range=(0, 151))
+    else:
+        fig = px.bar(ach_levels, x='Year', y='AI', facet_col='Grade', facet_col_wrap=3, facet_col_spacing=0.01)
+        fig.update_traces(width=0.1,
+                          texttemplate="%{y}", textposition='outside')
+        fig.update_yaxes(range=(0,151))
+        fig.update_xaxes(type='category')
+    
+    return st.plotly_chart(fig, use_container_width=True)
+
+def ai_line(df, subj:str):
+    df = df[df[f"{subj}VoidFlag"] == 'No']
+    ach_levels = df.groupby(['SPSYear', f'{subj}AchievementLevel'])[f'{subj}AchievementLevel'].count()
+    ach_levels.index = ach_levels.index.set_names(['Year', 'AchLevel'])
+    ach_levels = ach_levels.reset_index()
+    ach_levels.columns = ['Year', 'AchLevel','Count']
+    conditions = [
+    (ach_levels['AchLevel'] == 'Advanced'),
+    (ach_levels['AchLevel'] == 'Mastery'),
+    (ach_levels['AchLevel'] == 'Basic')
+    ]
+    values = [150, 100, 80]
+    ach_levels['AIContrib'] = np.select(conditions, values) * ach_levels['Count']
+    ach_levels = ach_levels.groupby(['Year'])[['Count', 'AIContrib']].sum().reset_index()
+    ach_levels['AI'] = round(ach_levels['AIContrib'] / ach_levels['Count'], 1)
+    
+    if len(ach_levels['Year'].unique()) != 1: 
+        fig = px.line(ach_levels, x='Year', y='AI', markers=True)
+        fig.update_traces(mode='lines+markers+text',texttemplate="%{y}", textposition='top center')
+        fig.update_xaxes(dtick="M12", tickformat="%Y")
+        fig.update_yaxes(range=(0, 151))
+    else:
+        fig = px.bar(ach_levels, x='Year', y='AI')
+        fig.update_traces(width=0.1,
+                          texttemplate="%{y}", textposition='outside')
+        fig.update_yaxes(range=(0,151))
+        fig.update_xaxes(type='category')
+    
+    
+    return st.plotly_chart(fig, use_container_width=True)
+
+
+    
