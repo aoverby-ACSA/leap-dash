@@ -5,6 +5,7 @@ st.set_page_config(page_title="Behrman LEAP", layout="wide")
 page_setup()
 
 st.title("Behrman LEAP Results")
+st.write("*Click on a tab below for different data views*")
 
 behrman = load_leap_data("Behrman")
 
@@ -13,6 +14,15 @@ behrman = load_leap_data("Behrman")
 st.sidebar.subheader("School Year Range")
 yr1, yr2 = st.sidebar.slider("*Choose a range of years:*", help="The year selected represents the first year of the school year span. E.g., when you select years 2020-2022 you're selecting school year 2020-2021 through school year 2022-2023", min_value=2017, max_value=2022, value=(2020, 2022), key='date_range')
 behrman = behrman[(behrman['SPSYear'] >= yr1) & (behrman['SPSYear'] <= yr2)]
+
+# Grade Level Filter
+st.sidebar.subheader("Grade Level Selection")
+grade_choices = {'All Grades':'All Grades', 3:'3rd Grade', 4:'4th Grade', 5:'5th Grade', 6:'6th Grade', 7:'7th Grade', 8:'8th Grade'}
+grade_choice = st.sidebar.selectbox("*Choose a grade level*", options=grade_choices, format_func=grade_choices.get)
+if grade_choice != 'All Grades':
+    behrman = behrman[behrman['Grade'] == grade_choice]
+else:
+    pass
 
 # Subject select variables
 subjs = {'ELA':'ELA', 'Math':'Math', 'Social':'Social Studies', 'Science':'Science'}
