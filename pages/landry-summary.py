@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_extras.dataframe_explorer import dataframe_explorer
 from app.utils import page_setup, metric_card, load_leap_data, ach_histogram, scale_score_distrib, ach_by_yr_line, ss_median_line
 
 st.set_page_config(page_title="Landry LEAP", layout="wide")
@@ -33,7 +34,7 @@ else:
     pass
 
 # Viz Tabs
-tab1, tab2, tab3 = st.tabs(['Achievement Level Summary', 'Achievement Level % Over Time', 'Distribution of Scaled Scores'])
+tab1, tab2, tab3, tab4 = st.tabs(['Achievement Level Summary', 'Achievement Level % Over Time', 'Distribution of Scaled Scores', 'View and Download Data'])
 
 with tab1:
     st.subheader(f"{subj_title} Achievement Level Summary")
@@ -76,10 +77,7 @@ with tab1:
         num_adv = landry[f"{subj_choice}AchievementLevel"].str.match('Advanced').sum()    
         with col5:
             metric_card(metric=num_adv, caption="Advanced", fa_icon_name='', box_color=(0,255,0), font_color=(255,255,255))
-    
-    with st.expander(label='**View Data**'):
-        st.dataframe(data=landry, use_container_width=True, hide_index=True)
-    
+            
     col1, col2 = st.columns(2)
     with col1:
         st.markdown('### Median Scale Score')
@@ -187,5 +185,13 @@ with tab3:
     
     scale_score_distrib(landry, subj_choice)
 
-
-
+with tab4:
+    landry['SPSYear'] = landry['SPSYear'].dt.year
+    cols = ['LastName', 'FirstName', 'Grade', f'{subj_choice}TestingStatus', f'{subj_choice}RawScore', f'{subj_choice}ScaleScore', f'{subj_choice}AchievementLevel', 'SPSYear']
+    landry = landry[cols].dropna()
+    filtered_df = dataframe_explorer(landry, case=False)
+    st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+    data_as_csv = landry.to_csv(index=False).encode("utf-8")
+    st.download_button("Download as CSV ", data=data_as_csv, file_name=f"LandryLEAP{subj_choice}{yr1}", mime="text/csv")
+    
+    
