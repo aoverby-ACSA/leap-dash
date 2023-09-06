@@ -11,7 +11,7 @@ landry = load_leap_data("Landry")
 
 # Slider year variables to isolate wanted year range
 st.sidebar.subheader("School Year Range")
-yr1, yr2 = st.sidebar.slider("*Choose a range of years:*", help="The year selected represents the first year of the school year span. E.g., when you select years 2020-2022 you're selecting school year 2020-2021 through school year 2022-2023", min_value=2017, max_value=2022, value=(2020, 2022), key='date_range')
+yr1, yr2 = st.sidebar.slider("*Choose a range of years:*", help="The year selected represents the first year of the school year span. E.g., when you select years 2020-2022 you're selecting school year 2020-2021 through school year 2022-2023", min_value=2017, max_value=2022, value=(2022, 2022), key='date_range')
 landry = landry[(landry['SPSYear'] >= yr1) & (landry['SPSYear'] <= yr2)]
 
 # Subject select variables
@@ -60,6 +60,8 @@ ai_line(landry, subj_choice)
 # ass_indices = [al_ai, gm_ai, e1_ai, e2_ai, bl_ai, us_ai]
 
 # overall_ass_index = round(np.nanmean(ass_indices), 1)
+
+# st.write(overall_ass_index)
 
 # with st.expander(label="Summary Metrics", expanded=True):
 #     st.subheader(f"Overall Assessment Index {yr_choice}-{yr_choice + 1}")

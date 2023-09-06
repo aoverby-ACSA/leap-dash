@@ -12,10 +12,10 @@ path = "pages/landry-summary.py"
 name = "Landry Achievement Summary"
 icon=":📈:"
 
-# [[pages]]
-# path = "pages/landry-domain.py"
-# name = "Landry Domain Summary"
-# icon = "📚"
+[[pages]]
+path = "pages/landry-domain.py"
+name = "Landry Domain Summary"
+icon = "📚"
 
 [[pages]]
 path = "pages/landry-ai.py"

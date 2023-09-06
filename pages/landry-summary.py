@@ -12,7 +12,7 @@ landry = load_leap_data("Landry")
 ## Set filters
 # Slider year variables to isolate wanted year range
 st.sidebar.subheader("School Year Range")
-yr1, yr2 = st.sidebar.slider("*Choose a range of years:*", help="The year selected represents the first year of the school year span. E.g., when you select years 2020-2022 you're selecting school year 2020-2021 through school year 2022-2023", min_value=2017, max_value=2022, value=(2020, 2022), key='date_range')
+yr1, yr2 = st.sidebar.slider("*Choose a range of years:*", help="The year selected represents the first year of the school year span. E.g., when you select years 2020-2022 you're selecting school year 2020-2021 through school year 2022-2023", min_value=2017, max_value=2022, value=(2022, 2022), key='date_range')
 landry = landry[(landry['SPSYear'] >= yr1) & (landry['SPSYear'] <= yr2)]
 
 # Subject select variables
@@ -191,7 +191,7 @@ with tab4:
     landry = landry[cols].dropna()
     filtered_df = dataframe_explorer(landry, case=False)
     st.dataframe(filtered_df, use_container_width=True, hide_index=True)
-    data_as_csv = landry.to_csv(index=False).encode("utf-8")
-    st.download_button("Download as CSV ", data=data_as_csv, file_name=f"LandryLEAP{subj_choice}{yr1}", mime="text/csv")
+    data_as_csv = filtered_df.to_csv(index=False).encode("utf-8")
+    st.download_button("Download as CSV ", data=data_as_csv, file_name=f"LandryLEAP{subj_choice}{yr1}.csv", mime="text/csv")
     
     

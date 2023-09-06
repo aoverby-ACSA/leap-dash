@@ -314,7 +314,8 @@ def ach_histogram(df, subj: str):
                            "Basic": "green",
                            "Mastery": "lightgreen",
                            "Advanced": "lime"
-                       }, template='simple_white'
+                       }, 
+                       template='simple_white'
                        )
     fig.update_xaxes(dtick="M12", tickformat="%Y") ## Nice hack for getting timeseries x axis to look right
     fig.update_layout(showlegend=True)
@@ -453,5 +454,29 @@ def ai_line(df, subj:str):
     
     return st.plotly_chart(fig, use_container_width=True)
 
-
+def hs_domain_pie(df, subj:str):
+    domains_dict= {
+    'AL': ['ALMajorContentRating', 'ALInterpretingFunctionsRating',      'ALSolvingAlgebraicallyRating', 'ALSolvingGraphicallyRateofChangeRating', 'ALAdditionalAndSupportingContentRating', 'ALExpressingMathematicalReasoningRating', 'ALModelingAndApplicationRating'], 
+    'E2': ['E2ReadingPerformanceRating', 'E2ReadingLiteraryTextRating', 'E2ReadingInformationalTextRating', 'E2ReadingVocabularyTextRating', 'E2WritingPerformanceRating', 'E2WrittenExpressionRating', 'E2WrittenKnowledgeAndUseofLanguageConventionsRating'], 
+    'GM': ['GMMajorContentRating', 'GMCongruenceTransformationsSimilarityRating', 'GMSimilarityInTrigonometryModelingAndApplyingRating', 'GMAdditionalAndSupportingContentRating', 'GMExpressingMathematicalReasoningRating', 'GMModelingAndApplicationRating'], 
+    'E1': ['E1ReadingPerformanceRating', 'E1ReadingLiteraryTextRating', 'E1ReadingInformationalTextRating', 'E1ReadingVocabularyTextRating', 'E1WritingPerformanceRating', 'E1WrittenExpressionRating', 'E1WrittenKnowledgeAndUseofLanguageConventionsRating'],
+    'US': ['USWesternExpansionToProgressivismStandard2Rating', 'USIsolationismThroughGreatWarStandard3Rating', 'USBecomingWorldPowerThroughWorldWarIIStandard4Rating', 'USColdWarEraAndTheModernAgeStandard5and6Rating'], 
+    'BL': ['BLInvestigateRating', 'BLEvaluateRating', 'BLReasonScientificallyRating']
+    }
     
+    for x in domains_dict[subj]:
+        gbdf = df.groupby(['SPSYear', x])[x].count()
+        gbdf.index = gbdf.index.set_names(['Year', 'DomainAch'])
+        gbdf = gbdf.reset_index()
+        gbdf.columns = ['Year', 'DomainAch', 'Count']
+        
+        fig = px.pie(gbdf, names='DomainAch', values='Count', color='DomainAch', title=x, 
+                     color_discrete_map={
+                         'Weak':'crimson',
+                         'Moderate': 'orange',
+                         'Strong': 'green'
+                     }, template= 'simple_white')
+        
+        chart = st.plotly_chart(fig, use_container_width=True)
+    
+    return chart
